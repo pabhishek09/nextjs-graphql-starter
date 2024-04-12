@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "workspaces": [
-    "./packages/*"
+    "packages/*"
   ],
   "scripts": {
-    "start": "npx lerna run start",
-    "dev": "npx lerna run dev"
+    "start": "lerna run start",
+    "dev": "lerna run dev"
   },
   "keywords": [],
   "author": "",
