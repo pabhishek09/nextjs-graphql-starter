@@ -1,66 +1,53 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+  ApolloQueryResult,
+} from "@apollo/client";
+import { ClientContext } from "../clientContext";
 
-const books = [
-  {
-    title: "Meghan and Harry",
-    authors: ["Lady Colin Campbell"],
-  },
-  {
-    title: "Grandad's Camper",
-    authors: ["Harry Woodgate"],
-  },
-  {
-    title: "The Cadet Life of Prince Harry",
-    authors: ["Vasile Michael"],
-  },
-  {
-    title: "Prince Harry: The Inside Story",
-    authors: ["Duncan Larcombe"],
-  },
-  {
-    title: "The Irresistible Rise of Harry Potter",
-    authors: ["Andrew Blake"],
-  },
-  {
-    title: "The Making of the Potterverse",
-    authors: ["Scott Thomas"],
-  },
-  {
-    title: "Sir Harry",
-    authors: ["Archibald Marshall"],
-  },
-  {
-    title: "Harry",
-    authors: ["Katie Nicholl"],
-  },
-  {
-    title: "Harry and Meghan: A Love Story Coloring Book",
-    authors: ["Teresa Goodridge"],
-  },
-  {
-    title: "Harry's Holiday Level 1 Beginner/Elementary",
-    authors: ["Antoinette Moses"],
-  },
-];
+const GET_BOOKS = gql`
+  query Books($searchTerm: String!) {
+    books(searchTerm: $searchTerm) {
+      title
+      authors
+    }
+  }
+`;
 
 const BooksPage = () => {
   const firstEffect = useRef(true);
   const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [searchResults, setSearchresults] = useState<
     { title: string; authors: string[] }[]
   >([]);
 
-  // Handle changes on searchInput
+  const { data, loading } = useQuery(GET_BOOKS, {
+    variables: { searchTerm },
+  });
+  console.log({ data });
+
+  useEffect(() => {
+    if (data && data?.books) {
+      setSearchresults(data?.books);
+    } else {
+      setSearchresults([]);
+    }
+  }, [data]);
+
   useEffect(() => {
     if (firstEffect.current) {
       firstEffect.current = false;
       return;
     } else if (searchInput.length > 3) {
-      console.log(`Trigger a search for ${searchInput}`);
-      setSearchresults(books);
+      setSearchTerm(searchInput);
     }
   }, [searchInput]);
 
@@ -77,7 +64,7 @@ const BooksPage = () => {
         </div>
       </div>
       <div className="mt-8 border-solid border-2 border-indigo-600 p-4 rounded-md">
-        {searchResults.length > 0 ? (
+        {searchResults?.length > 0 ? (
           <div>
             <h1 className="text-center">Search results for {searchInput}</h1>
             {searchResults.map((result) => (
@@ -91,6 +78,7 @@ const BooksPage = () => {
             <h1 className="text-center">Search for some books</h1>
           </div>
         )}
+        {loading && <h1>loading results...</h1>}
       </div>
     </main>
   );

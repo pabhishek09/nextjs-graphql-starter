@@ -27,7 +27,7 @@ const fetchBooks = async (_, args: { searchTerm: string }) => {
     title: item.volumeInfo.title,
     authors: item.volumeInfo.authors,
   }));
-  console.log({ formattedJson });
+  console.log(`query successful for ${searchTerm}`);
   return formattedJson;
 };
 
