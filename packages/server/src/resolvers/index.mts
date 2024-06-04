@@ -1,3 +1,5 @@
+import { Resolvers } from '../types'
+
 type Item = {
   volumeInfo: {
     title: string;
@@ -36,7 +38,7 @@ const addReview = (_, args: { review: any }) => {
   return args.review;
 };
 
-const resolvers = {
+const resolvers: Resolvers = {
   Query: {
     books: fetchBooks,
   },

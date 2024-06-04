@@ -1,0 +1,27 @@
+type Book {
+  title: String
+  authors: [String]
+}
+
+type Author {
+  name: String
+  books: [Book]
+}
+
+input ReviewInput {
+  title: String
+  review: String
+}
+
+type Review {
+  title: String
+  review: String
+}
+
+type Query {
+  books(searchTerm: String): [Book]
+}
+
+type Mutation {
+  review(review: ReviewInput): Review
+}
